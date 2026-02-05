@@ -532,12 +532,7 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 .loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 20px;
+  display: none;
 }
 
 .spinner {
@@ -1108,6 +1103,36 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+   .auth-button-container {
+    position: fixed !important;
+    top: 12px !important;
+    right: 12px !important;
+    left: auto !important;
+    z-index: 2000 !important;
+  }
+
+  .auth-button-container .glass-header {
+    display: flex !important;
+    padding: 6px 12px !important;
+    background: var(--glass-bg-heavy) !important;
+    backdrop-filter: var(--backdrop-blur-heavy) !important;
+    -webkit-backdrop-filter: var(--backdrop-blur-heavy) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--glass-shadow) !important;
+  }
+
+  .auth-button-container .glass-header span {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+  }
+
+  .auth-button-container .btn-secondary {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+    min-width: auto !important;
+  }
   .liquid-glass-ui {
     left: 12px;
     right: 12px;
@@ -1173,4 +1198,903 @@ body {
   color: var(--text-primary);
   outline: none;
   cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+  .skeleton-loader {
+    padding: 50px;
+    margin-top: 10px;
+  }
+
+  .liquid-glass-ui {
+    left: 12px;
+    right: 12px;
+    width: calc(100% - 24px);
+    height: auto;
+    max-height: none;
+    top: auto;
+    bottom: 12px;
+    flex-direction: column;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+    
+    max-height: 45dvh;
+  }
+.liquid-glass-ui.results-view-active {
+    top: 12px;
+    bottom: 12px;
+    height: calc(100vh - 24px);
+  }
+
+  
+  .liquid-glass-ui.results-expanded {
+    top: 12px;
+    bottom: 12px;
+    height: calc(100vh - 24px);
+  }
+
+  .glass-header {
+    display: none;
+  }
+
+  .search-section {
+    margin: 50px;
+    padding: 14px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .liquid-glass-ui.results-expanded .search-section {
+    border-radius: 16px 16px 0 0;
+  }
+
+  .search-section label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .search-bar input {
+    padding: 10px 12px 10px 38px;
+    font-size: 13px;
+  }
+
+  .quick-suggestions {
+    display: none;
+  }
+
+  .filter-section {
+    display: none;
+    
+  }
+.liquid-glass-ui.results-view-active .filter-section {
+    display: none;
+  }
+  .panel-scroll-content {
+    display: none;
+    padding: 14px;
+    padding-top: 20px;
+  }
+  .liquid-glass-ui.results-view-active .panel-scroll-content,
+  .liquid-glass-ui.results-expanded .panel-scroll-content {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .liquid-glass-ui.results-expanded .panel-scroll-content {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .selected-state,
+  .welcome-state {
+    padding: 14px;
+  }
+
+  .selected-uni-card {
+    padding: 14px;
+    margin-bottom: 0;
+  }
+
+  .selected-uni-header {
+    margin-bottom: 12px;
+  }
+
+  .selected-uni-header h2 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+ .selected-uni-header .close-btn {
+    display: flex; /* Show the close button */
+  }
+  
+  .uni-header .close-btn {
+    display: flex; /* Show close button in results view too */
+  }
+
+  .search-prompt {
+    padding: 10px;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .search-prompt svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .search-prompt p {
+    font-size: 11px;
+  }
+
+  .search-btn {
+    padding: 10px 16px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .welcome-state {
+    display: none;
+  }
+
+  .results-view {
+    padding: 0;
+  }
+
+  .uni-header {
+    padding: 14px;
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--glass-bg-heavy);
+  }
+
+  .uni-title-row {
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .uni-header h2 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .stat-row {
+    font-size: 10px;
+  }
+
+  .currency-switcher {
+    padding: 3px 6px;
+    gap: 4px;
+  }
+
+  .currency-switcher svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .currency-switcher select {
+    font-size: 10px;
+  }
+
+  .close-btn {
+    padding: 6px;
+  }
+
+  .quick-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .stat-card {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .stat-card svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .stat-value {
+    font-size: 15px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .alumni-card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .alumni-card h4 {
+    font-size: 13px;
+  }
+
+  .role-text {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .metadata-tags {
+    gap: 4px;
+  }
+
+  .metadata-tag {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .metadata-tag svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .salary-pill {
+    padding: 5px 8px;
+    font-size: 11px;
+    align-self: flex-start;
+  }
+
+  .salary-pill svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .achievement-highlight {
+    font-size: 10px !important;
+    padding: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .path-timeline {
+    gap: 5px;
+    padding: 8px 0;
+    margin-bottom: 10px;
+  }
+
+  .timeline-label {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+
+  .path-node {
+    font-size: 10px;
+    gap: 5px;
+  }
+
+  .node-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  .card-actions {
+    gap: 6px;
+  }
+
+  .btn-secondary {
+    padding: 7px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .btn-secondary svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .loading-state {
+    padding: 40px 14px;
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+  }
+
+  .loading-state h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .loading-state p {
+    font-size: 11px;
+  }
+
+  .error-state,
+  .no-data {
+    padding: 30px 14px;
+  }
+
+  .error-state svg,
+  .no-data svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .error-state h3 {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .error-state p,
+  .no-data p {
+    font-size: 11px;
+  }
+
+  .retry-btn {
+    padding: 8px 14px;
+    font-size: 11px;
+    margin-top: 10px;
+  }
+
+  .hover-preview {
+  bottom: 120px; /* Move it higher on mobile to avoid being covered */
+  display: block; /* Show it on mobile */
+}
+
+.hover-preview-content {
+  padding: 10px 14px;
+  gap: 8px;
+}
+
+.hover-preview-content svg {
+  width: 14px;
+  height: 14px;
+}
+
+.hover-preview-content h4 {
+  font-size: 12px;
+  margin-bottom: 1px;
+}
+
+.hover-preview-content p {
+  font-size: 10px;
+}
+
+  .marker-shell {
+    width: 20px;
+    height: 20px;
+  }
+
+  .marker-core {
+    width: 6px;
+    height: 6px;
+  }
+
+  .marker-shell.active {
+    width: 24px;
+    height: 24px;
+  }
+
+  .marker-shell.active .marker-core {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skeleton-loader {
+    padding: 12px;
+    height: auto;
+  }
+  .liquid-glass-ui {
+    left: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    bottom: 10px;
+  }
+
+  .liquid-glass-ui.results-expanded {
+    top: 10px;
+    bottom: 10px;
+    height: calc(100vh - 20px);
+  }
+
+  .search-section {
+    padding: 12px;
+  }
+
+  .search-bar input {
+    padding: 9px 10px 9px 36px;
+    font-size: 12px;
+  }
+
+  .search-bar .icon {
+    left: 12px;
+  }
+
+  .clear-btn {
+    right: 10px;
+  }
+
+  .selected-uni-card {
+    padding: 12px;
+  }
+
+  .selected-uni-header h2 {
+    font-size: 14px;
+  }
+
+  .search-prompt p {
+    font-size: 10px;
+  }
+
+  .search-btn {
+    padding: 9px 14px;
+    font-size: 11px;
+  }
+
+  .uni-header {
+    padding: 12px;
+  }
+
+  .uni-header h2 {
+    font-size: 14px;
+  }
+
+  .stat-card {
+    padding: 7px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .alumni-card {
+    padding: 10px;
+  }
+
+  .alumni-card h4 {
+    font-size: 12px;
+  }
+
+  .role-text {
+    font-size: 10px;
+  }
+
+  .metadata-tag {
+    font-size: 8px;
+  }
+
+  .salary-pill {
+    font-size: 10px;
+  }
+
+  .path-node {
+    font-size: 9px;
+  }
+
+  .btn-secondary {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKELETON LOADER - MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+
+.skeleton-loader {
+  
+  display: block; /* Show on all devices */
+padding: 20px;
+  animation: fadeIn 0.4s ease-out;
+
+}
+
+.skeleton-card {
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 13px;
+  padding: 16px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.skeleton-header-left {
+  flex: 1;
+}
+
+.skeleton-title {
+  height: 16px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 70%;
+}
+
+.skeleton-subtitle {
+  height: 12px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  width: 85%;
+  margin-bottom: 10px;
+}
+
+.skeleton-tags {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.skeleton-tag {
+  height: 20px;
+  width: 70px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+.skeleton-pill {
+  height: 28px;
+  width: 60px;
+  background: rgba(0, 122, 255, 0.12);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.skeleton-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+}
+
+.skeleton-path {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  width: 90%;
+}
+
+.skeleton-path:nth-child(2) {
+  width: 75%;
+}
+
+.skeleton-path:nth-child(3) {
+  width: 80%;
+}
+
+.skeleton-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.skeleton-button {
+  flex: 1;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 9px;
+}
+
+/* Mobile-specific skeleton */
+@media (max-width: 768px) {
+  /* ════════════════════════════════════════════════════════════
+     FIX FOR SKELETON & LOADING STATE (Mobile)
+     Paste this INSIDE the @media (max-width: 768px) block
+     ════════════════════════════════════════════════════════════ */
+
+  /* 1. Force the drawer to expand fully when loading */
+  .liquid-glass-ui.results-view-active {
+    height: 95dvh !important; /* Force tall height */
+    max-height: 95dvh !important;
+    transition: height 0.3s ease-out;
+  }
+
+  /* 2. Style the scrollable area to take up all that space */
+  .liquid-glass-ui.results-view-active .panel-scroll-content {
+    display: block;
+    height: 100%;
+    padding-top: 20px; /* Space from top edge */
+    padding-bottom: 40px;
+  }
+
+  /* 3. SKELETON FIXES: Margin & Height */
+  .skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    
+    
+    /* FORCE HEIGHT: Ensures it fills the screen so drawer doesn't collapse */
+    min-height: 70vh; 
+    
+  }
+
+  /* 4. Individual Skeleton Card Tweaks */
+  .skeleton-card {
+    flex-shrink: 0; /* Prevents squishing */
+    height: auto;
+    min-height: 180px; /* Force minimum size for each card */
+    background: rgba(255,255,255, 0.6);
+  }
+  .skeleton-card {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .skeleton-title {
+    height: 14px;
+    margin-bottom: 6px;
+  }
+
+  .skeleton-subtitle {
+    height: 11px;
+    margin-bottom: 8px;
+  }
+
+  .skeleton-tag {
+    height: 18px;
+    width: 60px;
+  }
+
+  .skeleton-pill {
+    height: 24px;
+    width: 50px;
+  }
+
+  .skeleton-path {
+    height: 9px;
+  }
+
+  .skeleton-actions {
+    gap: 6px;
+  }
+
+  .skeleton-button {
+    height: 32px;
+  }
+
+  .skeleton-timeline {
+    gap: 5px;
+    padding: 8px 0;
+    margin-bottom: 10px;
+  }
+  
+}
+@media (max-width: 480px) {
+  .skeleton-card {
+    padding: 10px;
+  }
+
+  .skeleton-title {
+    height: 13px;
+  }
+
+  .skeleton-subtitle {
+    height: 10px;
+  }
+
+  .skeleton-tag {
+    height: 16px;
+    width: 50px;
+  }
+
+  .skeleton-pill {
+    height: 22px;
+    width: 45px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE HEADER & MENU SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Default: Hide mobile elements on Desktop */
+.mobile-top-bar, 
+.mobile-menu-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. Hide Desktop Elements */
+  .desktop-auth-container {
+    display: none !important;
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     2. SHOW MOBILE TOP BAR (Add this block inside the media query)
+     ════════════════════════════════════════════════════════════ */
+  .mobile-top-bar {
+    display: flex; /* This makes it visible */
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px;
+    padding-top: max(16px, env(safe-area-inset-top)); /* Handle Notch */
+    z-index: 2000;
+    pointer-events: none; /* Let clicks pass through to map */
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  /* Make the buttons clickable */
+  .mobile-top-bar > * {
+    pointer-events: auto;
+  }
+  
+  /* Brand Style */
+  /* ════════════════════════════════════════════════════════════
+     UPDATE THESE TWO BLOCKS INSIDE @media (max-width: 768px)
+     ════════════════════════════════════════════════════════════ */
+
+  /* 1. Transparent Brand */
+  .mobile-top-bar .brand {
+    background: transparent; /* Removes white box */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    /* Optional: Small text shadow to ensure it pops against the map */
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
+  }
+
+  /* 2. Transparent & Short Button */
+  /* Updated Menu Button (Compact & Semi-Opaque) */
+  .mobile-top-bar .btn-secondary {
+    /* 1. Make it a bit opaque (Glassy) */
+    background: rgba(255, 255, 255, 0.65); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* 2. Make it less wide (Fixed small square) */
+    width: 34px; 
+    height: 34px;
+    padding: 0;
+    flex: none; /* Prevents it from stretching */
+    
+    /* Centering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  /* Hide the brand inside the bottom sheet (sidebar) because it's now at the top */
+  .liquid-glass-ui .glass-header {
+    display: none;
+  }
+
+  /* 3. Mobile Menu Modal (Glass & Typography) */
+  .mobile-menu-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    /* User requested 0.7 opacity. We add blur to ensure text remains readable. */
+    background: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: 3000;
+    padding: 30px;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .mobile-menu-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  /* FIX: Make the Close (X) button a perfect square, same as the Menu button */
+  .mobile-menu-header .btn-secondary {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    flex: none; /* Prevents it from stretching */
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: none;
+  }
+
+  .mobile-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 10px;
+  }
+
+  /* TYPOGRAPHY: Nicer, cleaner fonts */
+  .mobile-summary h3 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    letter-spacing: -1px; /* Tighter, more modern heading */
+    line-height: 1.1;
+  }
+
+  .mobile-summary p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+  }
+
+  /* Mobile Auth Styling */
+  .mobile-auth-section {
+    margin-top: auto;
+    width: 100%;
+    padding-bottom: 20px;
+  }
+
+  .status-pill {
+    display: inline-block;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
 }

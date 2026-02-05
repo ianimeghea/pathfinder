@@ -14,15 +14,15 @@ import {
   Users,
   Building2,
   X,
-  Globe
+  Globe,
+  Menu
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 import { UNIVERSITY_DB } from './universities';
-
-// ═══════════════════════════════════════════════════════════════
-// CONFIGURATION & HELPERS
-// ═══════════════════════════════════════════════════════════════
+import { supabase } from './supabaseClient';
+import AuthModal from './AuthModal';
+import { API_BASE_URL } from './config';
 
 const CURRENCY_CONFIG = {
   USD: { symbol: '$', rate: 1, label: 'USD', locale: 'en-US' },
@@ -40,28 +40,24 @@ const glassIcon = new L.DivIcon({
   iconSize: [24, 24]
 });
 
-// Active/Selected Marker Icon
 const activeGlassIcon = new L.DivIcon({
   className: 'custom-pin active',
   html: `<div class="marker-shell active"><div class="marker-core"></div></div>`,
   iconSize: [28, 28]
 });
 
-// 1. EXTRACT RAW NUMBERS (Helper)
-// Returns array [120000, 150000] from "$120k - $150k"
+
 const extractSalaryNumbers = (salaryStr) => {
   if (!salaryStr || typeof salaryStr !== 'string') return [0];
   
   const cleanStr = salaryStr.toLowerCase();
   const numbers = cleanStr.match(/\d+/g)?.map(Number) || [];
   
-  // Handle "k" suffix logic (e.g. 120 -> 120000)
   const multiplier = cleanStr.includes('k') && numbers[0] < 1000 ? 1000 : 1;
   
   return numbers.map(n => n * multiplier);
 };
 
-// Helper component to animate map movement
 function MapController({ center, isSelected }) {
   const map = useMap();
   useEffect(() => {
@@ -72,29 +68,77 @@ function MapController({ center, isSelected }) {
   }, [center, isSelected, map]);
   return null;
 }
+const SkeletonLoader = () => (
+  <div className="skeleton-loader">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="skeleton-card">
+        <div className="skeleton-header">
+          <div className="skeleton-header-left">
+            <div className="skeleton-title"></div>
+            <div className="skeleton-subtitle"></div>
+            <div className="skeleton-tags">
+              <div className="skeleton-tag"></div>
+              <div className="skeleton-tag"></div>
+            </div>
+          </div>
+          <div className="skeleton-pill"></div>
+        </div>
 
-// ═══════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════
+        <div className="skeleton-timeline">
+          <div className="skeleton-path"></div>
+          <div className="skeleton-path"></div>
+          <div className="skeleton-path"></div>
+        </div>
+
+        <div className="skeleton-actions">
+          <div className="skeleton-button"></div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
 const App = () => {
-  // State
   const [selectedUni, setSelectedUni] = useState(null);
   const [hoveredUni, setHoveredUni] = useState(null);
   const [activeUni, setActiveUni] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  // Search State
   const [searchQuery, setSearchQuery] = useState("Software Engineer");
   const [universitySearch, setUniversitySearch] = useState("");
   const [filteredUniversities, setFilteredUniversities] = useState(UNIVERSITY_DB);
   const [showFilters, setShowFilters] = useState(false);
   
-  // View State
   const [mapCenter, setMapCenter] = useState([30, 10]);
   const [displayCurrency, setDisplayCurrency] = useState('USD');
 
-  // Filter universities based on search
+  const [session, setSession] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const [usageCount, setUsageCount] = useState(0);
+
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if(session) fetchUsage(session.user.id);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if(session) fetchUsage(session.user.id);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUsage = async (userId) => {
+    const { data } = await supabase
+      .from('user_usage')
+      .select('query_count')
+      .eq('id', userId)
+      .single();
+    if(data) setUsageCount(data.query_count);
+  };
   useEffect(() => {
     if (universitySearch.trim() === "") {
       setFilteredUniversities(UNIVERSITY_DB);
@@ -106,21 +150,17 @@ const App = () => {
     }
   }, [universitySearch]);
 
-  // Reset results when the user types or picks a new role
   useEffect(() => {
     if (activeUni) {
       setActiveUni(null);
     }
   }, [searchQuery]);
 
-  // 2. CORE CONVERTER (Single Value)
   const convertValue = (usdValue) => {
     const config = CURRENCY_CONFIG[displayCurrency];
     const converted = usdValue * config.rate;
     
-    // Formatting logic
     if (displayCurrency === 'RON') {
-      // Full number with dots: 450.000 lei
       return `${Math.round(converted).toLocaleString('ro-RO')} lei`;
     }
 
@@ -130,19 +170,16 @@ const App = () => {
     return `${config.symbol}${Math.round(converted / divisor)}${suffix}`;
   };
 
-  // 3. RANGE DISPLAY (For Individual Cards)
-  // Input: "$120k - $150k" -> Output: "€110k - €138k"
+  
   const displaySalaryRange = (salaryStr) => {
     const numbers = extractSalaryNumbers(salaryStr);
     if (numbers.length === 0 || numbers[0] === 0) return "N/A";
 
-    // Convert and format each number in the range
     const formattedParts = numbers.map(val => convertValue(val));
     return formattedParts.join(' - ');
   };
 
-  // 4. AVERAGE DISPLAY (For Stat Card)
-  // Input: Array of alumni -> Output: Single Average String
+ 
   const calculateGlobalAverage = (alumni) => {
     if (!alumni || alumni.length === 0) return "N/A";
 
@@ -159,7 +196,6 @@ const App = () => {
     return convertValue(avgUsd);
   };
 
-  // Handlers
   const handleUniClick = (uni) => {
     setSelectedUni(uni);
     setMapCenter(uni.coords);
@@ -168,16 +204,43 @@ const App = () => {
 
   const handleSearch = async () => {
     if (!selectedUni) return;
+
+    // AUTH CHECK
+    if (!session) {
+      setShowAuth(true);
+      return;
+    }
+    setHoveredUni(null); // Clear hover preview when searching
+
     setLoading(true);
     
     try {
+      const { access_token } = session; // Get the token
+
       const response = await fetch(
-        `http://127.0.0.1:5000/api/scrape?school=${encodeURIComponent(selectedUni.name)}&role=${encodeURIComponent(searchQuery)}&countryCode=${selectedUni.country || 'us'}`
+        `${API_BASE_URL}/api/scrape?school=${encodeURIComponent(selectedUni.name)}&role=${encodeURIComponent(searchQuery)}&countryCode=${selectedUni.country || 'us'}`,
+        {
+          headers: {
+            // Send token to backend
+            'Authorization': `Bearer ${access_token}` 
+          }
+        }
       );
       
-      if (!response.ok) throw new Error("Backend offline");
-      const alumniData = await response.json();
-      setActiveUni({ ...selectedUni, alumni: alumniData });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle Limit Reached Error
+        if (response.status === 403) {
+          alert("You have reached your 3 free queries! Upgrade coming soon.");
+          return;
+        }
+        throw new Error(data.error || "Backend offline");
+      }
+
+      setActiveUni({ ...selectedUni, alumni: data.alumni }); // Note: adjust if your backend structure changes slightly
+      setUsageCount(data.new_usage_count); // Update UI counter
+
     } catch (err) {
       console.error("Scraping failed:", err);
       setActiveUni({ ...selectedUni, alumni: [], error: true });
@@ -185,15 +248,25 @@ const App = () => {
       setLoading(false);
     }
   };
-
   const handleClearSearch = () => setSearchQuery("");
 
   const handleClearUniversity = () => {
-    setSelectedUni(null);
-    setActiveUni(null);
-    setMapCenter([30, 10]);
-  };
+  setSelectedUni(null);
+  setActiveUni(null);
+  setLoading(false); // Reset loading state
+  setMapCenter([30, 10]);
+};
+  const handleRoleSearchKeyDown = (e) => {
+  if (e.key === 'Enter' && selectedUni) {
+    handleSearch();
+  }
+};
 
+const handleUniversitySearchKeyDown = (e) => {
+  if (e.key === 'Enter' && filteredUniversities.length === 1) {
+    handleUniClick(filteredUniversities[0]);
+  }
+};
   const roleSuggestions = [
     "Software Engineer", "Product Manager", "Data Scientist",
     "Investment Banker", "Management Consultant", "Venture Capitalist"
@@ -201,6 +274,70 @@ const App = () => {
 
   return (
     <div className="app-viewport">
+      <div className="mobile-top-bar">
+        <div className="brand">
+          <Compass className="logo-icon" size={24} />
+          <span>PATHFINDER</span>
+        </div>
+        <button className="btn-secondary" onClick={() => setShowMobileMenu(true)}>
+          <Menu size={20} />
+        </button>
+      </div>
+      {showMobileMenu && (
+        <div className="mobile-menu-overlay animate-fade-in">
+          <div className="mobile-menu-content">
+            <div className="mobile-menu-header">
+              <div className="brand">
+                <Compass className="logo-icon" size={24} />
+                <span>PATHFINDER</span>
+              </div>
+              <button className="btn-secondary" onClick={() => setShowMobileMenu(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="mobile-summary">
+              <h3>Navigate Your Future</h3>
+              <p>
+                Don't guess your career path—map it. 
+                <br/><br/>
+                Access real salary data and career trajectories from alumni at the world's top universities. See exactly where a degree can take you.
+              </p>
+              <div className="mobile-auth-section">
+                {!session ? (
+                  <button className="search-btn" onClick={() => { setShowMobileMenu(false); setShowAuth(true); }}>
+                    Log In / Sign Up
+                  </button>
+                ) : (
+                  <div className="mobile-user-status">
+                    <div className="status-pill">{usageCount} / 3 Free Searches</div>
+                    <button className="btn-secondary" style={{width: '100%'}} onClick={() => supabase.auth.signOut()}>
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+<div className="desktop-auth-container" style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 1000 }}>
+        {!session ? (
+          <button className="btn-secondary" onClick={() => setShowAuth(true)}>
+            Log In
+          </button>
+        ) : (
+          <div className="glass-header" style={{ padding: '8px 16px', gap: '10px' }}>
+            <span style={{ fontSize: '13px' }}>{usageCount} / 3 Free Searches</span>
+            <button className="btn-secondary" style={{padding: '4px 8px'}} onClick={() => supabase.auth.signOut()}>
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
+      
+
+{showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={() => setShowAuth(false)} />}
       {hoveredUni && (
         <div className="hover-preview">
           <div className="hover-preview-content">
@@ -213,7 +350,7 @@ const App = () => {
         </div>
       )}
 
-      <div className="liquid-glass-ui">
+      <div className={`liquid-glass-ui ${(loading || activeUni) ? 'results-view-active' : ''}`}>
         <header className="glass-header">
           <div className="brand">
             <Compass className="logo-icon" size={24} />
@@ -236,6 +373,7 @@ const App = () => {
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleRoleSearchKeyDown}
               placeholder="e.g. Venture Capitalist, Data Scientist" 
               autoComplete="off"
             />
@@ -283,6 +421,7 @@ const App = () => {
                   type="text" 
                   value={universitySearch}
                   onChange={(e) => setUniversitySearch(e.target.value)}
+                  onKeyDown={handleUniversitySearchKeyDown}
                   placeholder="Search universities..." 
                   autoComplete="off"
                 />
@@ -315,11 +454,8 @@ const App = () => {
 
         <div className="panel-scroll-content">
           {loading ? (
-            <div className="loading-state">
-              <Loader2 className="spinner" size={32} />
-              <h3>Analyzing Career Paths</h3>
-              <p>Gathering alumni data from {selectedUni?.name || "selected university"}...</p>
-            </div>
+         
+          <SkeletonLoader />
           ) : activeUni ? (
             <div className="results-view animate-fade-in">
               <div className="uni-header">
