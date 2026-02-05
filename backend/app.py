@@ -11,7 +11,7 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": "https://sweet-kringle-64edad.netlify.app"
+            "origins": "https://pathfinderly.netlify.app"
         }
     }
 )
