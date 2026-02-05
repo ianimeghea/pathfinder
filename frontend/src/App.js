@@ -201,7 +201,6 @@ const App = () => {
 
   return (
     <div className="app-viewport">
-      {/* Hover Tooltip */}
       {hoveredUni && (
         <div className="hover-preview">
           <div className="hover-preview-content">
@@ -214,7 +213,6 @@ const App = () => {
         </div>
       )}
 
-      {/* Main UI Panel */}
       <div className="liquid-glass-ui">
         <header className="glass-header">
           <div className="brand">
@@ -226,7 +224,6 @@ const App = () => {
           </div>
         </header>
 
-        {/* Career Search Section */}
         <div className="search-section">
           <label htmlFor="role-search">
             <Briefcase size={14} className="inline-icon" />
@@ -265,7 +262,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* University Filter Section */}
         <div className="filter-section">
           <button 
             className="filter-toggle"
@@ -317,7 +313,6 @@ const App = () => {
           )}
         </div>
 
-        {/* Results Area */}
         <div className="panel-scroll-content">
           {loading ? (
             <div className="loading-state">
@@ -337,7 +332,6 @@ const App = () => {
                     </div>
                   </div>
                   
-                  {/* Currency Switcher & Close grouped on the right */}
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <div className="currency-switcher">
                       <Globe size={14} />
@@ -404,7 +398,6 @@ const App = () => {
                         )}
                       </div>
                       
-                      {/* RANGE DISPLAY: Shows "X - Y" correctly converted */}
                       {alum.salary && (
                         <div className="salary-pill">
                           {displaySalaryRange(alum.salary)}
@@ -502,7 +495,6 @@ const App = () => {
         </div>
       </div>
 
-      {/* Map Layer */}
       <MapContainer 
         center={mapCenter} 
         zoom={3} 

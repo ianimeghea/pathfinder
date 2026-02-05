@@ -14,9 +14,8 @@ load_dotenv(override=True)
 SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
-# Safety Check (Optional but recommended)
 if not SERPER_API_KEY or not OPENAI_API_KEY:
-    print("⚠️  WARNING: API Keys not found in .env file!")
+    print("WARNING: API Keys not found in .env file!")
 
 def get_structured_alumni_analysis(raw_profiles, country_code):
     """
@@ -82,7 +81,7 @@ def get_alumni_data(school, role, country_code):
     payload = json.dumps({
         "q": query,
         "num": 10,
-        "gl": country_code # Geolocation helps align market-specific profile layouts
+        "gl": country_code 
     })
     
     headers = {
@@ -103,15 +102,12 @@ def get_alumni_data(school, role, country_code):
     if "organic" in results:
         for idx, item in enumerate(results["organic"]):
             link = item.get("link", "")
-            # Ensure we aren't getting company pages or job postings
             if "/in/" not in link or "/jobs/" in link: continue
 
-            # Combine title and snippet
-            # We specifically look for patterns like '5 yrs 2 mos' in the snippet
+           
             snippet = item.get('snippet', '')
             full_text_blob = f"Header: {item.get('title')} | Timeline Data: {snippet}"
             
-            # Sitelinks often contain 'Experience' specifically
             if "sitelinks" in item:
                 for sl in item["sitelinks"]:
                     if "Experience" in sl.get("title", ""):
