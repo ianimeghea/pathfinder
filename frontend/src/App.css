@@ -1,7 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════
-   PATHFINDER — Liquid Glass UI System (Enhanced)
-   Optimized for Maximum Readability & Space Efficiency
-   ═══════════════════════════════════════════════════════════════ */
+
 
 :root {
   --glass-bg: rgba(255, 255, 255, 0.72);
@@ -24,7 +21,29 @@
   padding: 0;
   box-sizing: border-box;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100dvh; /* Use dynamic viewport height */
+  overflow: hidden; /* STOP SCROLLING */
+  overscroll-behavior: none; /* STOP BOUNCING/RUBBER-BANDING on iOS */
+  touch-action: none; /* Disables browser gestures like swipe-to-back in some cases */
+  -webkit-font-smoothing: antialiased;
+}
 
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* CRITICAL: Prevents iOS form zooming when tapping inputs.
+   Inputs must be 16px or larger to stop auto-zoom. 
+*/
+input, select, textarea, button {
+  font-size: 16px !important; 
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -1202,11 +1221,7 @@ body {
 
 
 @media (max-width: 768px) {
-  .skeleton-loader {
-    padding: 50px;
-    margin-top: 10px;
-  }
-
+ 
   .liquid-glass-ui {
     left: 12px;
     right: 12px;
@@ -1239,7 +1254,19 @@ body {
 
   .search-section {
     margin: 50px;
-    padding: 14px;
+    margin-bottom: 80px;
+    padding: 10px;
+    border-radius: 16px 16px 0 0;
+    transition: margin-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .liquid-glass-ui.results-view-active .search-section,
+  .liquid-glass-ui.results-expanded .search-section {
+    margin-bottom: 20px;
+    border-radius: 16px 16px 0 0; /* Keep border radius consistent */
+  }
+
+  /* Specific fix for expanded view to ensure it handles the radius correctly */
+  .liquid-glass-ui.results-expanded .search-section {
     border-radius: 16px 16px 0 0;
   }
 
@@ -1248,13 +1275,15 @@ body {
   }
 
   .search-section label {
-    font-size: 11px;
+    font-size: 14px;
     margin-bottom: 6px;
+    font-weight: 700;
+    font-family: inherit;
   }
 
   .search-bar input {
     padding: 10px 12px 10px 38px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .quick-suggestions {
@@ -1271,7 +1300,7 @@ body {
   .panel-scroll-content {
     display: none;
     padding: 14px;
-    padding-top: 20px;
+    
   }
   .liquid-glass-ui.results-view-active .panel-scroll-content,
   .liquid-glass-ui.results-expanded .panel-scroll-content {
@@ -1541,7 +1570,6 @@ body {
   }
 
   .hover-preview {
-  bottom: 120px; /* Move it higher on mobile to avoid being covered */
   display: block; /* Show it on mobile */
 }
 
@@ -2097,4 +2125,169 @@ padding: 20px;
     font-weight: 600;
     color: var(--text-primary);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE UNIVERSITY SEARCH BAR
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Default: Hidden on Desktop */
+.mobile-uni-search-container {
+  display: none;
+}
+
+/* 2. Mobile Styles */
+@media (max-width: 768px) {
+  .mobile-uni-search-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    /* Position it below the top bar (approx 60px down) */
+    top: 80px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px); /* Full width minus margins */
+    max-width: 350px;
+    z-index: 1500; /* Above map, below modals */
+    gap: 8px;
+  }
+
+  /* The Input Box */
+  .mobile-search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 46px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 24px rgba(0, 122, 255, 0.15);
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  .mobile-search-box .search-icon {
+    color: var(--text-secondary);
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+
+  .mobile-search-box input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none;
+    padding: 0;
+    font-family: inherit;
+  }
+
+  .mobile-search-box input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .mobile-search-box .clear-btn {
+    position: static; /* Override default absolute positioning */
+    padding: 4px;
+    color: var(--text-secondary);
+  }
+
+  /* The Dropdown Results */
+  .mobile-search-dropdown {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    max-height: 200px;
+    overflow-y: auto;
+    animation: slideDown 0.2s ease-out;
+    display: flex;
+    flex-direction: column;
+    
+    /* CHANGE THIS: Remove gap so borders touch/connect */
+    gap: 0; 
+}
+
+.mobile-search-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px; /* Increased slightly for better tap target */
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-weight: 500;
+
+    /* ADD THIS: The separator line */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    /* ADD THIS: Reset radius so they look like a stacked list */
+    border-radius: 0; 
+}
+
+/* ADD THIS: Fix the corners for top and bottom items */
+.mobile-search-item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.mobile-search-item:last-child {
+    border-radius: 0 0 8px 8px;
+    border-bottom: none; /* Remove the line from the very last item */
+}
+
+/* Optional: Add hover effect back */
+.mobile-search-item:active {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+  .mobile-search-item svg {
+    color: var(--accent);
+    stroke-width: 2;
+  }
+
+  .mobile-search-empty {
+    padding: 12px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAP TOOLTIP OVERRIDES (Floating Labels)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Reset the Leaflet default styles */
+.leaflet-tooltip.glass-tooltip {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaflet-tooltip.glass-tooltip::before {
+  display: none;
+}
+
+.leaflet-tooltip .hover-preview-content {
+  white-space: nowrap;
+  pointer-events: none; 
+    transform: scale(0.9);
+  transform-origin: bottom center;
 }

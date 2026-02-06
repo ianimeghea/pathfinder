@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import { 
   Compass, 
@@ -7,7 +7,6 @@ import {
   MapPin, 
   Briefcase, 
   DollarSign, 
-  Loader2, 
   ExternalLink,
   ChevronRight,
   TrendingUp,
@@ -33,7 +32,6 @@ const CURRENCY_CONFIG = {
   RON: { symbol: 'lei', rate: 4.58, label: 'RON', locale: 'ro-RO' }
 };
 
-// Custom Elegant Marker Icon
 const glassIcon = new L.DivIcon({
   className: 'custom-pin',
   html: `<div class="marker-shell"><div class="marker-core"></div></div>`,
@@ -185,7 +183,6 @@ const App = () => {
 
     const totalUsd = alumni.reduce((acc, alum) => {
       const range = extractSalaryNumbers(alum.salary);
-      // Calculate midpoint of this person's range
       const midPoint = range.length === 2 
         ? (range[0] + range[1]) / 2 
         : range[0];
@@ -205,17 +202,16 @@ const App = () => {
   const handleSearch = async () => {
     if (!selectedUni) return;
 
-    // AUTH CHECK
     if (!session) {
       setShowAuth(true);
       return;
     }
-    setHoveredUni(null); // Clear hover preview when searching
+    setHoveredUni(null);
 
     setLoading(true);
     
     try {
-      const { access_token } = session; // Get the token
+      const { access_token } = session; 
 
       const response = await fetch(
         `${API_BASE_URL}/api/scrape?school=${encodeURIComponent(selectedUni.name)}&role=${encodeURIComponent(searchQuery)}&countryCode=${selectedUni.country || 'us'}`,
@@ -283,6 +279,47 @@ const handleUniversitySearchKeyDown = (e) => {
           <Menu size={20} />
         </button>
       </div>
+      {!activeUni && !loading &&  (
+        <div className="mobile-uni-search-container">
+          <div className="mobile-search-box">
+            <Search size={16} className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="Find a university..." 
+              value={universitySearch}
+              onChange={(e) => setUniversitySearch(e.target.value)}
+            />
+            {universitySearch && (
+              <button className="clear-btn" onClick={() => setUniversitySearch('')}>
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
+          {/* Dropdown Results */}
+          {universitySearch && (
+            <div className="mobile-search-dropdown">
+              {filteredUniversities.length > 0 ? (
+                filteredUniversities.slice(0, 5).map(uni => (
+                  <button
+                    key={uni.id}
+                    className="mobile-search-item"
+                    onClick={() => {
+                      handleUniClick(uni);
+                      setUniversitySearch(""); // Clear text
+                    }}
+                  >
+                    <MapPin size={14} />
+                    <span>{uni.name}</span>
+                  </button>
+                ))
+              ) : (
+                <div className="mobile-search-empty">No results found</div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       {showMobileMenu && (
         <div className="mobile-menu-overlay animate-fade-in">
           <div className="mobile-menu-content">
@@ -299,9 +336,11 @@ const handleUniversitySearchKeyDown = (e) => {
             <div className="mobile-summary">
               <h3>Navigate Your Future</h3>
               <p>
-                Don't guess your career path—map it. 
+                Don't guess your career path - map it. 
                 <br/><br/>
                 Access real salary data and career trajectories from alumni at the world's top universities. See exactly where a degree can take you.
+                <br/><br/>
+                Select your dream role, pick a university, and discover the paths alumni took to get there. 
               </p>
               <div className="mobile-auth-section">
                 {!session ? (
@@ -338,17 +377,7 @@ const handleUniversitySearchKeyDown = (e) => {
       
 
 {showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={() => setShowAuth(false)} />}
-      {hoveredUni && (
-        <div className="hover-preview">
-          <div className="hover-preview-content">
-            <MapPin size={16} />
-            <div>
-              <h4>{hoveredUni.name}</h4>
-              <p>Click to select</p>
-            </div>
-          </div>
-        </div>
-      )}
+      
 
       <div className={`liquid-glass-ui ${(loading || activeUni) ? 'results-view-active' : ''}`}>
         <header className="glass-header">
@@ -653,7 +682,25 @@ const handleUniversitySearchKeyDown = (e) => {
               mouseover: () => setHoveredUni(uni),
               mouseout: () => setHoveredUni(null)
             }}
-          />
+          >
+            {(hoveredUni?.id === uni.id || selectedUni?.id === uni.id) && (
+              <Tooltip 
+                direction="top" 
+                offset={[0, -28]} 
+                opacity={1} 
+                permanent 
+                className="glass-tooltip"
+              >
+                <div className="hover-preview-content">
+                  <MapPin size={16} />
+                  <div>
+                    <h4>{uni.name}</h4>
+                    <p>Click to select</p>
+                  </div>
+                </div>
+              </Tooltip>
+            )}
+          </Marker>
         ))}
         <ZoomControl position="bottomright" />
       </MapContainer>
