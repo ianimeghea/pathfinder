@@ -11,7 +11,7 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": "https://pathfinderly.netlify.app"
+            "origins": ["https://pathfinderly.netlify.app", "http://127.0.0.1:3000", 'http://localhost:3000']
         }
     }
 )
@@ -155,10 +155,11 @@ def get_alumni_data(school, role, country_code):
             })
 
     return final_results[:10]
-
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "Alive", 200
 @app.route('/api/scrape', methods=['GET'])
 def scrape():
-    # 1. EXTRACT TOKEN
     auth_header = request.headers.get('Authorization')
     if not auth_header:
         return jsonify({"error": "Unauthorized"}), 401
