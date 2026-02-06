@@ -11,7 +11,7 @@ CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": ["https://pathfinderly.netlify.app", "http://127.0.0.1:3000", 'http://localhost:3000']
+            "origins": ["https://pathfinderly.netlify.app", "http://127.0.0.1:3000", 'http://localhost:3000', 'http://www.alumniq.org']
         }
     }
 )
